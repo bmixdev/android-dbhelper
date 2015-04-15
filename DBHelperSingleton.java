@@ -17,31 +17,23 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 
-import com.ycb.ycbandroid.common.APIRequest;
 
 @SuppressLint("SimpleDateFormat")
 public class DBHelperSingleton {
 	private static DBHelperSingleton dbHelper = null; // 静态私用成员，没有初始化
 	private SQLiteDatabase mDB = null;
 	private DataBaseHelper mBaseHelper = null;
-	private static Context context = APIRequest.context;
-	private static String PRIMARYKEY = "ycb_tid";
-	public static final String DBASE_NAME = "YCBDB";
+	private static String PRIMARYKEY = “table_tid";	//主键名称，为了不与类中自己定义的id产生冲突，请保持在类中不会出现此字段
+	private static String DBASE_NAME=“You_db_name”;
 	public static final int DBASE_VERSION = 1;
 
 	// 私有构造函数
 	private DBHelperSingleton(Context context) {
-		if (APIRequest.getUserID().equals("-1")
-				|| APIRequest.getUserID().length() <= 0) {
-			mBaseHelper = new DataBaseHelper(context, DBASE_NAME, null,
+		mBaseHelper = new DataBaseHelper(context, DBASE_NAME, null,
 					DBASE_VERSION);
-		} else {
-			mBaseHelper = new DataBaseHelper(context, APIRequest.getUserID()
-					+ DBASE_NAME, null, DBASE_VERSION);
-		}
 	}
 
-	public synchronized static DBHelperSingleton getInstance() {
+	public synchronized static DBHelperSingleton getInstance(Context context) {
 		if (dbHelper == null) {
 			dbHelper = new DBHelperSingleton(context);
 		}
@@ -49,18 +41,8 @@ public class DBHelperSingleton {
 	}
 
 	/**
-	 * 改变数据库
-	 */
-	public void changeDB() {
-
-		mBaseHelper = new DataBaseHelper(context, APIRequest.getUserID()
-				.equals("-1") ? DBASE_NAME : APIRequest.getUserID()
-				+ DBASE_NAME, null, DBASE_VERSION);
-	}
-
-	/**
 	 * 创建数据库表
-	 * 
+	 * 主键为空的时候，默认生成主键，主键名PRIMARYKEY：table_tid
 	 * @param cClass
 	 * @param primaryKey
 	 * @return false 建表失败 true 建表成功
