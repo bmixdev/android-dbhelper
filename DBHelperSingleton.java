@@ -123,7 +123,6 @@ public class DBHelperSingleton {
 			if (buffer2.length() > 0) {
 				sql = sql + buffer2.substring(0, buffer2.length() - 1) + ")";
 			}
-			APIRequest.logStr("插入语句->" + sql);
 			dbQuery(sql);
 
 		} catch (Exception e) {
@@ -160,7 +159,6 @@ public class DBHelperSingleton {
 		} else {
 			sql = "DELETE FROM " + cls.getSimpleName() + " WHERE " + conditions;
 		}
-		APIRequest.logStr("删除语句->" + sql);
 		return dbQuery(sql);
 	}
 
